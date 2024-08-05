@@ -47,7 +47,7 @@ class BasicAuth(Auth):
         try:
             header = base64.b64decode(base64_auth).decode('utf-8')
             return header
-        except:
+        except Exception:
             return None
 
     def user_object_from_credentials(self, user_email: str, user_pwd: str)\
@@ -55,7 +55,7 @@ class BasicAuth(Auth):
         """Gets user based on credentials.
         """
 
-        if not all((user_email, user_pwd)):
+        if user_email is None or user_pwd is None:
             return None
         search_list = User.search({
             "email": user_email
@@ -65,6 +65,7 @@ class BasicAuth(Auth):
         for user in search_list:
             if user.is_valid_password(user_pwd):
                 return user
+        return None
 
     def current_user(self, request=None) -> TypeVar('User'):
         """gets current user object.
