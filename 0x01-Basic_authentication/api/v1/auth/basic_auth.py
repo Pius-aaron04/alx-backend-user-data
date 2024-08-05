@@ -13,6 +13,8 @@ class BasicAuth(Auth):
 
     def extract_base64_authorization_header(self,
                                             authorization_header: str) -> str:
+        """Extracts Authorization header value
+        """
         if not isinstance(authorization_header, str) or not\
            authorization_header.startswith('Basic ') or not\
            authorization_header:
@@ -50,6 +52,8 @@ class BasicAuth(Auth):
 
     def user_object_from_credentials(self, user_email: str, user_pwd: str)\
             -> TypeVar('User'):
+        """Gets user based on credentials.
+        """
 
         if not all((user_email, user_pwd)):
             return None
@@ -63,6 +67,8 @@ class BasicAuth(Auth):
                 return user
 
     def current_user(self, request=None) -> TypeVar('User'):
+        """gets current user object.
+        """
         auth_header = self.authorization_header(request)
         auth_header = self.extract_base64_authorization_header(auth_header)
         decoded = self.decode_base64_authorization_header(auth_header)
