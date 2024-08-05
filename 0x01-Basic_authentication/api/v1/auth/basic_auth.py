@@ -42,12 +42,12 @@ class BasicAuth(Auth):
         """
         base64_auth = base64_authorization_header
 
-        if not base64_auth or not isinstance(base64_auth, str):
+        if base64_auth is None or not isinstance(base64_auth, str):
             return None
         try:
             header = base64.b64decode(base64_auth).decode('utf-8')
             return header
-        except UnicodeDecodeError:
+        except:
             return None
 
     def user_object_from_credentials(self, user_email: str, user_pwd: str)\
