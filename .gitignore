@@ -1,1 +1,5 @@
-**/__pycache/**
+*~
+*.swp
+**/__pycache__/**
+mtests/
+*main.py
