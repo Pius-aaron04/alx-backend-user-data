@@ -35,7 +35,7 @@ class SessionAuth(Auth):
         Return
           - corresponding user_id
           - None if session_id is None or not a string
-          - None if session_id is not found 
+          - None if session_id is not found
         """
 
         if not isinstance(session_id, str) or not session_id:
@@ -56,3 +56,21 @@ class SessionAuth(Auth):
         if not user_id:
             return None
         return User.get(user_id)
+
+    def destroy_session(self, request=None):
+        """deletes user session on logout.
+        """
+
+        if request is None:
+            return None
+        session_id = request.cookies.get(getenv('SESSION_NAME'))
+        if session_id is None:
+            return None
+
+        user_id = self.user_id_for_session_id(session_id)
+
+        if not user_id:
+            return None
+        del self.user_id_by_session_id[session_id]
+
+        return True
