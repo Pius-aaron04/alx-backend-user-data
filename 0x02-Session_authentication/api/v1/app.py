@@ -19,16 +19,19 @@ if auth:
     from api.v1.auth.basic_auth import BasicAuth
     from api.v1.auth.session_auth import SessionAuth
     from api.v1.auth.session_exp_auth import SessionExpAuth
-    if auth == 'auth':
-        auth = Auth()
-    elif auth == 'basic_auth':
-        auth = BasicAuth()
-    elif auth == 'session_auth':
-        auth = SessionAuth()
-    elif auth == 'session_exp_auth':
-        auth = SessionExpAuth()
-    else:
-        auth = None
+    from api.v1.auth.session_db_auth import SessionDBAuth
+
+    auths = {
+            'auth': Auth,
+            'basic_auth': BasicAuth,
+            'session_auth': SessionAuth,
+            'session_exp_auth': SessionExpAuth,
+            'session_db_auth': SessionDBAuth
+            }
+
+    auth = auths.get(auth)
+    if auth:
+        auth = auth()
 
 
 @app.errorhandler(404)
