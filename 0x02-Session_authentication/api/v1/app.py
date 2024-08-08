@@ -60,11 +60,14 @@ def before_request_auth():
              '/api/v1/forbidden/', '/api/v1/auth_session/login/']
     if not auth.require_auth(request.path, paths):
         return
+    if auth.authorization_header(request) and auth.session_cookie(request):
+        return None, abort(401)
+    if not auth.authorization_header(request) and\
+            getenv('AUTH_TYPE') == 'basic_auth':
+        abort(401)
     current_user = auth.current_user(request)
     if not current_user:
         abort(403)
-    if auth.authorization_header(request) and auth.session_cookie(request):
-        return None, abort(401)
 
     request.current_user = current_user
 
