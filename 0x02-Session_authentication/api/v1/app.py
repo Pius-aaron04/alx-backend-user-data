@@ -2,7 +2,6 @@
 """
 Route module for the API
 """
-from os import getenv
 from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
@@ -13,6 +12,7 @@ app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = os.getenv('AUTH_TYPE', None)
+AUTH_TYPE = auth
 
 if auth:
     from api.v1.auth.auth import Auth
@@ -68,9 +68,12 @@ def before_request_auth():
         return
     if auth.authorization_header(request) and auth.session_cookie(request):
         return None, abort(401)
-    if not auth.authorization_header(request) and\
-            getenv('AUTH_TYPE') == 'basic_auth':
+    if not auth.authorization_header(request) and AUTH_TYPE == 'basic_auth':
         abort(401)
+    if not auth.session_cookie(request) and AUTH_TYPE in ('session_auth',
+                                                          'session_exp_auth',
+                                                          'session_db_auth'):
+        return None, abort(401)
     current_user = auth.current_user(request)
     if not current_user:
         abort(403)
@@ -79,6 +82,6 @@ def before_request_auth():
 
 
 if __name__ == "__main__":
-    host = getenv("API_HOST", "0.0.0.0")
-    port = getenv("API_PORT", "5000")
+    host = os.getenv("API_HOST", "0.0.0.0")
+    port = os.getenv("API_PORT", "5000")
     app.run(host=host, port=port)
