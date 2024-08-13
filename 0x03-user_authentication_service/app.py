@@ -2,7 +2,8 @@
 """Simple Flask App"""
 
 from auth import Auth
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort, redirect
+from flask import make_response
 
 app = Flask(__name__)
 AUTH = Auth()
@@ -34,6 +35,50 @@ def register_user():
         except ValueError:
             return jsonify({"message": "email already registered"}), 400
         return jsonify({"email": user.email, "message": "user created"}), 200
+
+
+@app.route("/sessions", methods=["POST"])
+def login():
+    """Logs in user"""
+
+    password = request.form.get('password')
+    email = request.form.get('email')
+
+    if not AUTH.valid_login(email, password):
+        abort(401)
+
+    response = make_response(jsonify({"email": email, "message": "logged in"}))
+    session_id = AUTH.create_session(email)
+    response.set_cookie('session_id', session_id)
+
+    return response, 200
+
+
+@app.route("/sessions", methods=["DELETE"])
+def logout():
+    """Logs user out."""
+
+    session_id = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if user:
+        AUTH.destroy_session(session_id)
+        redirect("/")
+    abort(403)
+
+
+@app.route("/profile", methods=["GET"])
+def user_profile():
+    """gets current user data"""
+
+    session_id = request.cookies.get('session_id')
+    if not session_id:
+        abort(403)
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if not user:
+        abort(403)
+    return jsonify({"email": user.email}), 200
 
 
 if __name__ == '__main__':

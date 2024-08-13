@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""""App Db 
+"""Auth App Db
 """
 
 from bcrypt import hashpw
@@ -21,7 +21,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db")
+        self._engine = create_engine("sqlite:///a.db", echo=True)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -66,6 +66,6 @@ class DB:
 
         user = self.find_user_by(id=user_id)
         for k, v in kwargs.items():
-          if k not in user.__table__.columns.keys():
-              raise ValueError
-          setattr(user, k, v) 
+            if k not in user.__table__.columns.keys():
+                raise ValueError
+            setattr(user, k, v)
