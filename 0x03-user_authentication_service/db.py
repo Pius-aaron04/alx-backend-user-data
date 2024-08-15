@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Auth App Db
+"""Auth App Db class definition
 """
 
 from bcrypt import hashpw
 from sqlalchemy import create_engine
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -21,7 +21,7 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db")
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -39,11 +39,12 @@ class DB:
         """Adds user data to db
         """
 
-        user = User(email=email, hashed_password=hashed_password)
-        self._session.add(user)
+        new_user = User(email=email, hashed_password=hashed_password)
+        self._session.add(new_user)
         self._session.commit()
+        self._session.refresh(new_user)
 
-        return user
+        return new_user
 
     def find_user_by(self, **kwargs):
         """Finds users with matching attributes in kwargs.
@@ -54,7 +55,10 @@ class DB:
           - InvalidRequestError when wrong query arguments are passed
         """
 
-        user = self._session.query(User).filter_by(**kwargs).first()
+        try:
+            user = self._session.query(User).filter_by(**kwargs).first()
+        except Exception:
+            raise InvalidRequestError
 
         if not user:
             raise NoResultFound
