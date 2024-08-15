@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Auth App Db class definition.
+"""Db class definition module.
 """
 
 from sqlalchemy import create_engine
@@ -7,10 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from typing import TypeVar
-from user import User
-
-from user import Base
+from user import User, Base
 
 
 class DB:
