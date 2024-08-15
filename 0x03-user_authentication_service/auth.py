@@ -8,14 +8,14 @@ from typing import Union, TypeVar
 import uuid
 
 
-def _hash_password(password: str) -> str:
+def _hash_password(password: str) -> bytes:
     """Returs a hashed password in bytes."""
 
     password = password.encode('utf-8')
     return hashpw(password, gensalt())
 
 
-def _generate_uuid():
+def _generate_uuid() -> str:
     """generates a uuiq"""
 
     return str(uuid.uuid4())
