@@ -4,7 +4,7 @@
 
 from bcrypt import hashpw
 from sqlalchemy import create_engine
-from sqlalchemy.orm.exc import NoResultFound, InvalidRequestError
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -55,10 +55,7 @@ class DB:
           - InvalidRequestError when wrong query arguments are passed
         """
 
-        try:
-            user = self._session.query(User).filter_by(**kwargs).first()
-        except Exception:
-            raise InvalidRequestError
+        user = self._session.query(User).filter_by(**kwargs).first()
 
         if not user:
             raise NoResultFound

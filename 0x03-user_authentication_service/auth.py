@@ -98,7 +98,7 @@ class Auth:
 
         reset_token = _generate_uuid()
 
-        self._db.updates_user(user.id, reset_token=reset_token)
+        self._db.update_user(user.id, reset_token=reset_token)
 
         return reset_token
 
