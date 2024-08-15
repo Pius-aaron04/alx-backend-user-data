@@ -66,7 +66,7 @@ class DB:
         """Updates user data"""
 
         user = self.find_user_by(id=user_id)
-        for k, v in kwargs.items():
-            if k not in user.__table__.columns.keys():
+        for key, value in kwargs.items():
+            if not hasattr(user, key):
                 raise ValueError
-            setattr(user, k, v)
+            setattr(user, key, value)

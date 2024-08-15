@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 """Password hashing."""
 
-from bcrypt import hashpw, gensalt, checkpw
+import bcrypt
 from db import DB
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm.exc import NoResultFound
 from typing import Union, TypeVar
 import uuid
 
 
 def _hash_password(password: str) -> bytes:
-    """Returs a hashed password in bytes."""
+    """hashes a password in string.
+    Returns:
+      - bytes
+    """
 
     password = password.encode('utf-8')
-    return hashpw(password, gensalt())
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password, salt)
 
 
 def _generate_uuid() -> str:
@@ -49,7 +53,7 @@ class Auth:
             return False
 
         pwd_hash = user.hashed_password.encode('utf-8')
-        return checkpw(password.encode('utf-8'), pwd_hash)
+        return bcrypt.checkpw(password.encode('utf-8'), pwd_hash)
 
     def create_session(self, email: str) -> str:
         """Creates a session for email
@@ -110,7 +114,8 @@ class Auth:
         except NoResultFound:
             raise ValueError
 
-        hashed_pwd = hashpw(password.encode('utf-8'), gensalt())
+        salt = bcrypt.gensalt()
+        hashed_pwd = bcrypt.hashpw(password.encode('utf-8'), salt)
         self._db.update_user(user.id,
                              hashed_password=hashed_pwd.decode('utf-8'),
                              reset_token=None)

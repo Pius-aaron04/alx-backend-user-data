@@ -42,7 +42,6 @@ def log_in(email: str, password: str) -> str:
     assert 200 == res.status_code
     assert {"email": email, "message": "logged in"} == res.json()
     session_id = res.cookies.get('session_id')
-    print(session_id)
     return session_id
 
 
