@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Auth App Db class definition
+"""Auth App Db class definition.
 """
 
 from bcrypt import hashpw
@@ -35,8 +35,8 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email: str, hashed_password: str) -> TypeVar('User'):
-        """Adds user data to db
+    def add_user(self, email: str, hashed_password: str) -> User:
+        """Adds user data to db.
         """
 
         new_user = User(email=email, hashed_password=hashed_password)
