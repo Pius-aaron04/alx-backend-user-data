@@ -4,6 +4,7 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -51,7 +52,10 @@ class DB:
           - InvalidRequestError when wrong query arguments are passed
         """
 
-        user = self._session.query(User).filter_by(**kwargs).first()
+        try:
+            user = self._session.query(User).filter_by(**kwargs).first()
+        except Exception:
+            raise InvalidRequestError
 
         if not user:
             raise NoResultFound
