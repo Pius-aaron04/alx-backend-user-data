@@ -11,7 +11,11 @@ AUTH = Auth()
 
 @app.route("/", methods=["GET"])
 def index():
-    return jsonify({"message": "Bievenue"}), 200
+    """Index endpoint
+    Return
+      - 200
+    """
+    return jsonify({"message": "Bienvenue"}), 200
 
 
 @app.route("/users", methods=["POST"])

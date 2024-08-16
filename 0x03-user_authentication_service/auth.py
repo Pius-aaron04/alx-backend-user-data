@@ -5,6 +5,7 @@ import bcrypt
 from db import DB
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Union, TypeVar
+from user import User
 import uuid
 
 
@@ -32,7 +33,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email, password) -> TypeVar('User'):
+    def register_user(self, email, password) -> User:
         """Registers user to db"""
 
         try:
