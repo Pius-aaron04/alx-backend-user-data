@@ -43,7 +43,7 @@ class DB:
 
         return new_user
 
-    def find_user_by(self, **kwargs):
+    def find_user_by(self, **kwargs) -> User:
         """Finds users with matching attributes in kwargs.
         Return
           - list of user instances matching kwargs

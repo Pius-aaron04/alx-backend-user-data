@@ -99,6 +99,9 @@ def reset_passwd():
         reset_token = request.form.get('reset_token')
         new_password = request.form.get('new_password')
 
+        if not email:
+            abort(403)
+
         AUTH.update_password(reset_token, new_password)
     except ValueError:
         abort(403)

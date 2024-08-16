@@ -32,7 +32,7 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email, password):
+    def register_user(self, email, password) -> TypeVar('User'):
         """Registers user to db"""
 
         try:
@@ -109,6 +109,8 @@ class Auth:
     def update_password(self, reset_token: str, password: str) -> None:
         """updates user password."""
 
+        if not reset_token:
+            raise ValueError
         try:
             user = self._db.find_user_by(reset_token=reset_token)
         except NoResultFound:
