@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Contains a filter function for data obfuscate."""
 
-from typing import List
+from typing import List, TypeVar
 import re
 import logging
 import csv
@@ -41,7 +41,7 @@ class RedactingFormatter(logging.Formatter):
                             self.SEPARATOR)
 
 
-def get_logger() -> logging.Logger:
+def get_logger() -> TypeVar('logging.Logger'):
     """returns a logger object."""
     logger = logging.getLogger(__name__)
     logger.addHandler(logging.StreamHandler())
